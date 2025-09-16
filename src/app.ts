@@ -4,14 +4,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 import expressLayouts from 'express-ejs-layouts';
 import authRoutes from './routes/authRoutes';
-import { initTelegramBot } from './services/telegramBot';
+import { initTelegramBot, getBotInstance } from './services/telegramBot';
 import dashboardRoutes from './routes/dashboardRoutes';
 import cookieParser from 'cookie-parser';
 import { getBotInfo, sendMessage } from './controllers/botController';
 import { isAuthenticated } from './middleware/auth';
 import walletRoutes from './routes/walletRoutes';
 import betRoutes from './routes/betRoutes';
-
 
 dotenv.config();
 
@@ -24,8 +23,6 @@ if (!BOT_TOKEN || !CHANNEL_ID) {
     console.error('Missing required environment variables: BOT_TOKEN or CHANNEL_ID');
     process.exit(1);
 }
-
-
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -60,16 +57,19 @@ app.get('/auth/signup', (req, res) => {
 app.get('/api/bot/status', isAuthenticated, getBotInfo);
 app.post('/api/bot/send', isAuthenticated, sendMessage);
 
-// Initialize Telegram Bot
-if (!BOT_TOKEN || !CHANNEL_ID) {
-    console.error('Missing BOT_TOKEN or CHANNEL_ID in environment variables');
-    process.exit(1);
-}
-
 // Initialize Telegram bot
 try {
-    initTelegramBot();   // ✅ no arguments
+    const bot = initTelegramBot();   // polling-free
     console.log('Telegram bot initialized successfully');
+
+    // Webhook endpoint for Telegram
+    if (BOT_TOKEN) {
+        app.post(`/bot${BOT_TOKEN}`, (req, res) => {
+            bot.processUpdate(req.body);
+            res.sendStatus(200);
+        });
+        console.log(`Telegram webhook route registered at /bot${BOT_TOKEN}`);
+    }
 } catch (error) {
     console.error('Failed to initialize Telegram bot:', error);
     process.exit(1);
@@ -84,7 +84,6 @@ if (!DB_CONNECTION_STRING) {
 mongoose.connect(DB_CONNECTION_STRING)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
-
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
