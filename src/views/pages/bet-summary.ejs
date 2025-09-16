@@ -1,0 +1,135 @@
+<div class="container my-5">
+    <h2 class="mb-5 text-center">Bet Summary</h2>
+
+    <div class="row g-4">
+        <!-- Up Bets -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-primary shadow-sm h-100 hover-shadow">
+                <div class="card-header bg-primary text-white text-center fw-bold">Up Bets</div>
+                <div class="card-body p-2">
+                    <table class="table table-sm table-bordered mb-0 text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Number</th>
+                                <th>Bets Count</th>
+                                <th>Total Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% const maxUp = Math.max(...Object.values(upBets).map(b=>b.amount), 1); %>
+                            <% for(let i=0; i<=9; i++) { 
+                                const bet = upBets[i] || { count: 0, amount: 0 }; 
+                                const width = (bet.amount / maxUp) * 100;
+                                const colorIntensity = Math.floor((bet.amount / maxUp) * 255); %>
+                                <tr>
+                                    <td><%= i %></td>
+                                    <td><%= bet.count %></td>
+                                    <td>
+                                        <div class="progress" style="height:20px; background-color:#e6f0ff;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                style="width: <%= width %>%; background-color: rgb(0,0,<%= colorIntensity %>);"
+                                                title="<%= bet.amount %> tokens">
+                                                <%= bet.amount %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Down Bets -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card border-success shadow-sm h-100 hover-shadow">
+                <div class="card-header bg-success text-white text-center fw-bold">Down Bets</div>
+                <div class="card-body p-2">
+                    <table class="table table-sm table-bordered mb-0 text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Number</th>
+                                <th>Bets Count</th>
+                                <th>Total Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% const maxDown = Math.max(...Object.values(downBets).map(b=>b.amount), 1); %>
+                            <% for(let i=0; i<=9; i++) { 
+                                const bet = downBets[i] || { count: 0, amount: 0 };
+                                const width = (bet.amount / maxDown) * 100;
+                                const colorIntensity = Math.floor((bet.amount / maxDown) * 255); %>
+                                <tr>
+                                    <td><%= i %></td>
+                                    <td><%= bet.count %></td>
+                                    <td>
+                                        <div class="progress" style="height:20px; background-color:#e6ffe6;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                style="width: <%= width %>%; background-color: rgb(0,<%= colorIntensity %>,0);"
+                                                title="<%= bet.amount %> tokens">
+                                                <%= bet.amount %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jodii Bets -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card border-warning shadow-sm h-100 hover-shadow">
+                <div class="card-header bg-warning text-dark text-center fw-bold">Jodii Bets</div>
+                <div class="card-body p-2" style="max-height: 600px; overflow-y:auto;">
+                    <table class="table table-sm table-bordered mb-0 text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Number</th>
+                                <th>Bets Count</th>
+                                <th>Total Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% const maxJodii = Math.max(...Object.values(jodiiBets).map(b=>b.amount), 1); %>
+                            <% for(let i=0; i<=99; i++) { 
+                                const bet = jodiiBets[i] || { count: 0, amount: 0 }; 
+                                const width = (bet.amount / maxJodii) * 100;
+                                const colorIntensity = Math.floor((bet.amount / maxJodii) * 255); %>
+                                <tr>
+                                    <td><%= i.toString().padStart(2,'0') %></td>
+                                    <td><%= bet.count %></td>
+                                    <td>
+                                        <div class="progress" style="height:18px; background-color:#fff5e6;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                style="width: <%= width %>%; background-color: rgb(<%= colorIntensity %>,165,0);"
+                                                title="<%= bet.amount %> tokens">
+                                                <%= bet.amount %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.progress-bar {
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    transition: width 0.5s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+</style>

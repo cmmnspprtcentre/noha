@@ -1,0 +1,296 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Welcome, <%= user.username %>
+                    </h4>
+                    <div>
+                        <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="fas fa-user"></i> Edit Profile
+                        </button>
+                        <a href="/auth/logout" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Profile Section -->
+                        <div class="col-md-4">
+                            <div class="card mb-3 border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0"><i class="fas fa-user-circle"></i> Profile Info</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="mb-3">
+                                        <img src="https://via.placeholder.com/100" class="rounded-circle mb-2"
+                                            alt="Profile">
+                                    </div>
+                                    <h6 class="mb-2">
+                                        <%= user.username %>
+                                    </h6>
+                                    <p class="card-text"><i class="fas fa-envelope"></i>
+                                        <%= user.email %>
+                                    </p>
+                                    <p class="card-text"><i class="fas fa-calendar"></i> Member since: <%= new
+                                            Date(user.createdAt).toLocaleDateString() %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Telegram Bot Section -->
+                        <div class="col-md-8">
+                            <div class="card mb-3 border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="card-title mb-0"><i class="fab fa-telegram"></i> Telegram Bot Status</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <div>
+                                                <h6 class="mb-1">Bot Status:
+                                                    <span class="badge bg-success" id="botStatus">Checking...</span>
+                                                </h6>
+                                                <small class="text-muted" id="lastUpdated">Last Updated: <%= new
+                                                        Date().toLocaleString() %></small>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-primary me-2" id="refreshStatus">
+                                                    <i class="fas fa-sync"></i> Refresh Status
+                                                </button>
+                                                <button class="btn btn-success" id="sendMessage">
+                                                    <i class="fas fa-paper-plane"></i> Send Test Message
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Bot Statistics -->
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-4">
+                                                <div class="border rounded p-3 text-center">
+                                                    <h3 class="mb-1" id="activeUsers">-</h3>
+                                                    <small>Active Users</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="border rounded p-3 text-center">
+                                                    <h3 class="mb-1" id="messagesReceived">-</h3>
+                                                    <small>Messages Today</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="border rounded p-3 text-center">
+                                                    <h3 class="mb-1" id="commandsUsed">-</h3>
+                                                    <small>Commands Used</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bot Commands -->
+                                    <h6 class="mb-3">Available Commands</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Command</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>/start</td>
+                                                    <td>Start the bot</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>/help</td>
+                                                    <td>Show available commands</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add this after the Telegram Bot section -->
+                        <div class="col-12 mt-4">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="card-title mb-0"><i class="fas fa-coins"></i> Wallet & Betting</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <h5>Wallet Balance</h5>
+                                                    <h3 id="walletBalance">0 tokens</h3>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#addTokensModal">
+                                                        Add Tokens
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5>Place Bet</h5>
+                                                    <form id="betForm">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-6">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Name" name="name" required>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <input type="tel" class="form-control"
+                                                                    placeholder="Phone Number" name="phoneNumber"
+                                                                    required>
+                                                            </div>
+
+
+
+                                                            <!-- Date Picker -->
+                                                            <div class="col-md-4">
+                                                                <input type="date" class="form-control" name="date"
+                                                                    id="betDate" required>
+                                                            </div>
+
+                                                            <!-- Period Selection (dynamic) -->
+                                                            <div class="col-md-4" id="periodField"></div>
+
+                                                            <!-- Bet Type -->
+                                                            <div class="col-md-4">
+                                                                <select class="form-control" name="type" id="betType"
+                                                                    required>
+                                                                    <option value="">Select Type</option>
+                                                                    <option value="up">Up</option>
+                                                                    <option value="down">Down</option>
+                                                                    <option value="jodii">Jodii</option>
+                                                                </select>
+                                                            </div>
+                                                            <!-- Number Field (dynamic based on type) -->
+                                                            <div class="col-md-4" id="numberField"></div>
+
+                                                            <div class="col-md-4">
+                                                                <input type="number" class="form-control"
+                                                                    placeholder="Amount" name="amount" required>
+                                                            </div>
+
+                                                            <div class="col-12">
+                                                                <button type="submit" class="btn btn-success">Place
+                                                                    Bet</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bet History -->
+                                    <div class="mt-4">
+                                        <h5>Bet History</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Transaction ID</th>
+                                                        <th>Date</th>
+                                                        <th>Name</th>
+                                                        <th>Number</th>
+                                                        <th>Amount</th>
+                                                        <th>Type</th>
+                                                        <th>Period</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="betHistory"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bet Details Modal -->
+                                    <div class="modal fade" id="betDetailsModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Bet Details</h5>
+                                                    <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body" id="betDetailsContent">
+                                                    <!-- Filled dynamically -->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button id="sendToWhatsapp" class="btn btn-success">
+                                                        <i class="bi bi-whatsapp"></i> Send to WhatsApp
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Tokens Modal -->
+                        <div class="modal fade" id="addTokensModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Add Tokens</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="addTokensForm">
+                                            <div class="mb-3">
+                                                <label class="form-label">Amount</label>
+                                                <input type="number" class="form-control" name="amount" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Add Tokens</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" value="<%= user.username %>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="<%= user.email %>">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
