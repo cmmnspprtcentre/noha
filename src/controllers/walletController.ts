@@ -13,6 +13,8 @@ export const getWalletBalance = async (req: Request, res: Response) => {
     }
 };
 
+
+
 export const addTokens = async (req: Request, res: Response) => {
     try {
         const { amount } = req.body;
