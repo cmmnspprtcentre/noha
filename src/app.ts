@@ -25,7 +25,7 @@ if (!BOT_TOKEN || !CHANNEL_ID) {
 }
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 3000;
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -85,6 +85,6 @@ mongoose.connect(DB_CONNECTION_STRING)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
 
-app.listen(port, () => {
+app.listen(port,'0.0.0.0', () => {
     console.log(`Server is running on port ${port}`);
 });
