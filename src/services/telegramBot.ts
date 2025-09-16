@@ -89,7 +89,7 @@ const handleDraw = async (
   );
 
   const cardLabel = numberToCard(winningNum);
-  const suits = ["Spades", "Clubs", "Diamond", "Heart"];
+  const suits = ["Spades", "Clubs", "diamond", "heart"];
   const suit = suits[Math.floor(Math.random() * suits.length)];
   const cardPath = path.resolve(
     __dirname,
